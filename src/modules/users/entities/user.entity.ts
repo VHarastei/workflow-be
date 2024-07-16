@@ -1,19 +1,13 @@
-import {
-  BaseEntity,
-  PrimaryGeneratedColumn,
-  Entity,
-  Column,
-  Unique,
-} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
+import { BaseEntity } from 'src/common/entities/base.entity';
+import { Message } from 'src/modules/room/entities/message.entity';
+import { Room } from 'src/modules/room/entities/room.entity';
+import { Column, Entity, ManyToMany, OneToMany, Unique } from 'typeorm';
 
 @Entity()
 @Unique(['email'])
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
   @Column()
   firstName: string;
 
@@ -31,8 +25,11 @@ export class User extends BaseEntity {
   @Exclude()
   salt: string;
 
-  // @OneToMany(() => Blogpost, (blogpost) => blogpost.user)
-  // blogposts: Blogpost[];
+  @ManyToMany(() => Room, (rooms) => rooms.participants)
+  rooms: Room[];
+
+  @OneToMany(() => Message, (message) => message.creator)
+  messages: Message[];
 
   constructor(partial: Partial<User>) {
     super();

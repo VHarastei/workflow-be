@@ -1,4 +1,4 @@
-import { UserProfileDto } from 'src/users/dto/userProfile.dto';
+import { UserProfileDto } from 'src/modules/users/dto/userProfile.dto';
 
 export class LoginResponseDto {
   user: UserProfileDto;
