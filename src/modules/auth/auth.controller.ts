@@ -12,17 +12,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(
-    @Body() registerDto: RegisterDto,
-  ): Promise<RegisterResponseDto> {
+  async register(@Body() registerDto: RegisterDto): Promise<RegisterResponseDto> {
     try {
       return await this.authService.register(registerDto);
     } catch (error: any) {
       console.log('error', error);
-      if (
-        error instanceof QueryFailedError &&
-        error.message.includes('Duplicate entry')
-      ) {
+      if (error instanceof QueryFailedError && error.message.includes('Duplicate entry')) {
         throw new EmailAreadyInUseException();
       }
 

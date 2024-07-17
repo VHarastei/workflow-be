@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { MessageModule } from './modules/message/message.module';
 
 config();
 
@@ -26,6 +27,7 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     AuthModule,
     RoomModule,
     UsersModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

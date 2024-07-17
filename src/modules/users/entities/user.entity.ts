@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { Message } from 'src/modules/room/entities/message.entity';
+import { Message } from 'src/modules/message/entities/message.entity';
 import { Room } from 'src/modules/room/entities/room.entity';
 import { Column, Entity, ManyToMany, OneToMany, Unique } from 'typeorm';
 
