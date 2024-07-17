@@ -8,6 +8,7 @@ import { config } from 'dotenv';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { MessageModule } from './modules/message/message.module';
+import { ProjectModule } from './modules/project/project.module';
 
 config();
 
@@ -28,6 +29,7 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     RoomModule,
     UsersModule,
     MessageModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,60 +5,32 @@ import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { RoomService } from './room.service';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('rooms')
+@Controller('projects/:projectId/rooms')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Post()
-  createRoom(@Body() createRoomDto: CreateRoomDto) {
-    return this.roomService.create(createRoomDto);
+  createRoom(@Param('projectId') projectId: string, @Body() createRoomDto: CreateRoomDto) {
+    return this.roomService.create(projectId, createRoomDto);
   }
 
   @Get()
-  findAll() {
-    return this.roomService.findAll();
+  findAll(@Param('projectId') projectId: string) {
+    return this.roomService.findAll(projectId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roomService.findOne(id);
+  @Get(':roomId')
+  findOne(@Param('roomId') roomId: string) {
+    return this.roomService.findOne(roomId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    return this.roomService.update(id, updateRoomDto);
+  @Patch(':roomId')
+  update(@Param('roomId') roomId: string, @Body() updateRoomDto: UpdateRoomDto) {
+    return this.roomService.update(roomId, updateRoomDto);
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.roomService.delete(id);
+  @Delete(':roomId')
+  delete(@Param('roomId') roomId: string) {
+    return this.roomService.delete(roomId);
   }
-
-  // @Post(':roomId/sendMessage')
-  // sendMessage(
-  //   @Request() req,
-  //   @Param('roomId') roomId: string,
-  //   @Body() createMessageDto: CreateMessageDto,
-  // ) {
-  //   return this.messageService.create(req.user.id, roomId, createMessageDto);
-  // }
-
-  // @Patch(':roomId/:messageId')
-  // updateMessage(
-  //   @Request() req,
-  //   @Param('messageId') messageId: string,
-  //   @Body() updateMessageDto: UpdateMessageDto,
-  // ) {
-  //   return this.messageService.update(req.user.id, messageId, updateMessageDto);
-  // }
-
-  // @Delete(':roomId/:messageId')
-  // deleteMessage(@Request() req, @Param('messageId') id: string) {
-  //   return this.messageService.delete(req.user.id, id);
-  // }
-
-  // @Get(':roomId')
-  // findAllByRoom(@Param('roomId') roomId: string) {
-  //   return this.messageService.findAll(roomId);
-  // }
 }

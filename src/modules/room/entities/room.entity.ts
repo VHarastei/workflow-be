@@ -1,8 +1,9 @@
 import { User } from 'src/modules/users/entities/user.entity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { RoomTypeEnum } from '../enums/roomType.enum';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Message } from 'src/modules/message/entities/message.entity';
+import { Project } from 'src/modules/project/entities/project.entity';
 
 @Entity()
 export class Room extends BaseEntity {
@@ -18,4 +19,10 @@ export class Room extends BaseEntity {
 
   @OneToMany(() => Message, (message) => message.room)
   messages: Message[];
+
+  @Column()
+  projectId: string;
+
+  @ManyToOne(() => Project, (projectEntity) => projectEntity.rooms)
+  project: Project;
 }

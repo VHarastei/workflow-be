@@ -46,15 +46,15 @@ export class MessageService {
     return { status: HttpStatus.OK };
   }
 
-  findAll(roomId: string) {
-    const messages = this.messageRepository.findBy({ roomId });
+  async findAll(roomId: string) {
+    const messages = await this.messageRepository.findBy({ roomId });
 
     if (!messages) throw new NoMessagesFoundExeption();
 
     return messages;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} message`;
   }
 }

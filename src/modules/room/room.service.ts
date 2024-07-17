@@ -16,8 +16,8 @@ export class RoomService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create({ participants, ...roomDetails }: CreateRoomDto) {
-    const newRoom = this.roomRepository.create(roomDetails);
+  async create(projectId, { participants, ...roomDetails }: CreateRoomDto) {
+    const newRoom = this.roomRepository.create({ projectId, ...roomDetails });
 
     const savedRoom = await this.addParticipants(newRoom, participants);
 
@@ -49,8 +49,8 @@ export class RoomService {
     return { status: HttpStatus.OK };
   }
 
-  findAll() {
-    return this.roomRepository.find();
+  findAll(projectId: string) {
+    return this.roomRepository.findBy({ projectId });
   }
 
   findOne(id: string) {
