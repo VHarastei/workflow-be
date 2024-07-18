@@ -20,7 +20,7 @@ export class Room extends BaseEntity {
   @OneToMany(() => Message, (message) => message.room)
   messages: Message[];
 
-  @Column()
+  @Column({ nullable: true, default: null })
   projectId: string;
 
   @ManyToOne(() => Project, (projectEntity) => projectEntity.rooms)
