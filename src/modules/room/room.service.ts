@@ -16,10 +16,10 @@ export class RoomService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(projectId: string | undefined, { participants, ...roomDetails }: CreateRoomDto) {
-    const newRoom = this.roomRepository.create({ projectId, ...roomDetails });
+  async create(userId, { participants, ...roomDetails }: CreateRoomDto) {
+    const newRoom = this.roomRepository.create(roomDetails);
 
-    const savedRoom = await this.addParticipants(newRoom, participants);
+    const savedRoom = await this.addParticipants(newRoom, [userId, ...participants]);
 
     return savedRoom;
   }
@@ -50,7 +50,9 @@ export class RoomService {
   }
 
   findAll(userId: string, projectId: string | undefined) {
-    return this.roomRepository.find({ where: { projectId, participants: { id: userId } } });
+    return this.roomRepository.find({
+      where: { ...(projectId && { projectId }), participants: { id: userId } },
+    });
   }
 
   findOne(id: string) {

@@ -1,8 +1,12 @@
-import { IsArray, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 import { RoomTypeEnum } from '../enums/roomType.enum';
 import { Transform } from 'class-transformer';
 
 export class CreateRoomDto {
+  @IsString()
+  @IsOptional()
+  projectId: string;
+
   @IsString()
   name: string;
 

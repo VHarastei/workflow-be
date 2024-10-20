@@ -15,7 +15,7 @@ import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { MessageService } from './message.service';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('rooms/:roomId')
+@Controller('rooms/:roomId/messages')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 

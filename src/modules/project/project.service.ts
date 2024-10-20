@@ -39,7 +39,7 @@ export class ProjectService {
   }
 
   async findAll() {
-    const projects = await this.projectRepository.find();
+    const projects = await this.projectRepository.find({ relations: ['rooms'] });
 
     if (!projects) throw new NoProjectsFoundException();
 

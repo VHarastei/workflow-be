@@ -21,7 +21,7 @@ export class UsersService {
   }
 
   async create(createDto: CreateUserDto): Promise<User> {
-    const { email, password, firstName, lastName } = createDto;
+    const { email, password, firstName, lastName, role } = createDto;
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await this.hashPassword(password, salt);
@@ -30,6 +30,7 @@ export class UsersService {
       email,
       firstName,
       lastName,
+      role,
       salt,
       password: hashedPassword,
     });

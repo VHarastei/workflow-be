@@ -21,8 +21,8 @@ export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Post()
-  createRoom(@Query('projectId') projectId, @Body() createRoomDto: CreateRoomDto) {
-    return this.roomService.create(projectId, createRoomDto);
+  createRoom(@Request() req, @Body() createRoomDto: CreateRoomDto) {
+    return this.roomService.create(req.user.id, createRoomDto);
   }
 
   @Get()

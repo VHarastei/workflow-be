@@ -4,6 +4,7 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 import { Message } from 'src/modules/message/entities/message.entity';
 import { Room } from 'src/modules/room/entities/room.entity';
 import { Column, Entity, ManyToMany, OneToMany, Unique } from 'typeorm';
+import { RoleEnum } from '../enums/role.enum';
 
 @Entity()
 @Unique(['email'])
@@ -16,6 +17,9 @@ export class User extends BaseEntity {
 
   @Column()
   email: string;
+
+  @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.USER })
+  role: RoleEnum;
 
   @Column()
   @Exclude()
