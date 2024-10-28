@@ -46,4 +46,9 @@ export class MessageController {
   findAllByRoom(@Param('roomId') roomId: string) {
     return this.messageService.findAll(roomId);
   }
+
+  @Get(':messageId')
+  findAllByThread(@Param('messageId') messageId: string) {
+    return this.messageService.findAllByThread(messageId);
+  }
 }

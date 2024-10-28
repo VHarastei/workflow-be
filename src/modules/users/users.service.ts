@@ -20,6 +20,10 @@ export class UsersService {
     return this.userRepository.findOne({ where: { email } });
   }
 
+  findAll() {
+    return this.userRepository.find();
+  }
+
   async create(createDto: CreateUserDto): Promise<User> {
     const { email, password, firstName, lastName, role } = createDto;
 

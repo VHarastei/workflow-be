@@ -52,6 +52,7 @@ export class RoomService {
   findAll(userId: string, projectId: string | undefined) {
     return this.roomRepository.find({
       where: { ...(projectId && { projectId }), participants: { id: userId } },
+      relations: ['participants'],
     });
   }
 
@@ -63,7 +64,7 @@ export class RoomService {
     return room;
   }
 
-  private async addParticipants(room: Room, participants: string[]) {
+  async addParticipants(room: Room, participants: string[]) {
     const prevParticipants = room.participants || [];
     const prevParticipantsIds = prevParticipants.map(({ id }) => id);
 

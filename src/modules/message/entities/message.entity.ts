@@ -8,7 +8,7 @@ export class Message extends BaseEntity {
   @Column()
   roomId: string;
 
-  @Column()
+  @Column({ type: 'text' })
   text: string;
 
   @ManyToOne(() => Room, (roomEntity) => roomEntity.messages)
@@ -22,5 +22,5 @@ export class Message extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.messages)
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
-  creator: User;
+  user: User;
 }

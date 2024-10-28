@@ -32,7 +32,7 @@ export class User extends BaseEntity {
   @ManyToMany(() => Room, (rooms) => rooms.participants)
   rooms: Room[];
 
-  @OneToMany(() => Message, (message) => message.creator)
+  @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
 
   constructor(partial: Partial<User>) {

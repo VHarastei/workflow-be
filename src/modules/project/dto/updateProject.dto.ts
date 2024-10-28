@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateProjectDto {
   @IsString()
@@ -8,4 +8,12 @@ export class UpdateProjectDto {
   @IsString()
   @IsOptional()
   prefix: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsUUID(undefined, {
+    each: true,
+    message: 'Each participant must be a valid UUID',
+  })
+  participants: string[];
 }

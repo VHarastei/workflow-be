@@ -15,31 +15,39 @@ export class MessageService {
     private messageRepository: Repository<Message>,
   ) {}
 
-  create(userId: string, roomId: string, createMessageDto: CreateMessageDto) {
+  async create(userId: string, roomId: string, createMessageDto: CreateMessageDto) {
     const newMessage = this.messageRepository.create({
       roomId,
       userId,
       ...createMessageDto,
     });
 
-    return this.messageRepository.save(newMessage);
+    await this.messageRepository.save(newMessage);
+
+    return this.messageRepository.findOne({
+      where: [{ id: newMessage.id }],
+      relations: ['user'],
+    });
   }
 
   async update(userId: string, messageId: string, updateMessageDto: UpdateMessageDto) {
-    const message = await this.messageRepository.findOneBy({ id: messageId });
+    const message = await this.messageRepository.findOne({
+      where: { id: messageId },
+    });
 
     if (!message) throw new MessageDoesNotExist();
-    if (message.creator.id !== userId) throw new AccessDeniedException();
+    if (message.userId !== userId) throw new AccessDeniedException();
 
     await this.messageRepository.update(messageId, { ...updateMessageDto, updatedAt: new Date() });
 
-    return this.messageRepository.findOneBy({ id: messageId });
+    return this.messageRepository.findOne({ where: [{ id: messageId }], relations: ['user'] });
   }
 
   async delete(userId: string, messageId: string) {
     const message = await this.messageRepository.findOneBy({ id: messageId });
 
-    if (message.creator.id !== userId) throw new AccessDeniedException();
+    if (!message) throw new MessageDoesNotExist();
+    if (message.userId !== userId) throw new AccessDeniedException();
 
     await this.messageRepository.delete(messageId);
 
@@ -47,7 +55,11 @@ export class MessageService {
   }
 
   async findAll(roomId: string) {
-    const messages = await this.messageRepository.findBy({ roomId });
+    const messages = await this.messageRepository.find({
+      where: { roomId },
+      relations: ['user'],
+      order: { createdAt: 'ASC' },
+    });
 
     if (!messages) throw new NoMessagesFoundExeption();
 
@@ -56,5 +68,16 @@ export class MessageService {
 
   async findOne(id: number) {
     return `This action returns a #${id} message`;
+  }
+
+  async findAllByThread(messageId: string) {
+    const messages = await this.messageRepository.find({
+      where: [{ parentMessageId: messageId }, { id: messageId }],
+      relations: ['user'],
+    });
+
+    if (!messages) throw new NoMessagesFoundExeption();
+
+    return messages;
   }
 }
