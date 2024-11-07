@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
+import { UserDoesNotExistException } from 'src/common/exceptions/UserDoesNotExistException';
 
 @Injectable()
 export class UsersService {
@@ -40,6 +41,24 @@ export class UsersService {
     });
 
     return await user.save();
+  }
+
+  async updateProfile(
+    userId: string,
+    updateProfileDto: Partial<User>,
+    profileImagePath?: string,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UserDoesNotExistException();
+    }
+
+    Object.assign(user, updateProfileDto);
+    if (profileImagePath) {
+      user.profileImage = profileImagePath;
+    }
+
+    return this.userRepository.save(user);
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {

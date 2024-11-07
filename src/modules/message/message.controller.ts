@@ -13,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateMessageDto } from './dto/createMessage.dto';
 import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { MessageService } from './message.service';
+import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('rooms/:roomId/messages')
@@ -50,5 +51,15 @@ export class MessageController {
   @Get(':messageId')
   findAllByThread(@Param('messageId') messageId: string) {
     return this.messageService.findAllByThread(messageId);
+  }
+
+  @Patch(':messageId/toggle-reaction')
+  async toggleReaction(
+    @Request() req,
+    @Param('messageId') messageId: string,
+    @Param('roomId') roomId: string,
+    @Body() body: ToggleMessageReactionDto,
+  ) {
+    return await this.messageService.toggleReaction(req.user.id, roomId, messageId, body);
   }
 }

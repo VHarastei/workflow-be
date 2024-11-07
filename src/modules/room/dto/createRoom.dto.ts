@@ -10,6 +10,10 @@ export class CreateRoomDto {
   @IsString()
   name: string;
 
+  @IsString()
+  @IsOptional()
+  topic: string;
+
   @IsEnum(RoomTypeEnum)
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()

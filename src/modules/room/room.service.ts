@@ -50,10 +50,19 @@ export class RoomService {
   }
 
   findAll(userId: string, projectId: string | undefined) {
-    return this.roomRepository.find({
-      where: { ...(projectId && { projectId }), participants: { id: userId } },
-      relations: ['participants'],
-    });
+    return this.roomRepository
+      .createQueryBuilder('room')
+      .innerJoinAndSelect(
+        'room.participants',
+        'participantFilter',
+        'participantFilter.id = :userId',
+        {
+          userId,
+        },
+      )
+      .leftJoinAndSelect('room.participants', 'participant')
+      .andWhere(projectId ? 'room.projectId = :projectId' : '1=1', { projectId })
+      .getMany();
   }
 
   findOne(id: string) {

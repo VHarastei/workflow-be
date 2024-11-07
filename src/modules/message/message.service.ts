@@ -2,17 +2,20 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccessDeniedException } from 'src/common/exceptions/AccessDeniedException';
 import { MessageDoesNotExist } from 'src/common/exceptions/MessageDoesNotExist';
+import { NoMessagesFoundExeption } from 'src/common/exceptions/NoMessagesFoundExeption';
 import { Repository } from 'typeorm';
+import { ReactionService } from '../reaction/reaction.service';
 import { CreateMessageDto } from './dto/createMessage.dto';
+import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { Message } from './entities/message.entity';
-import { NoMessagesFoundExeption } from 'src/common/exceptions/NoMessagesFoundExeption';
 
 @Injectable()
 export class MessageService {
   constructor(
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
+    private reactionService: ReactionService,
   ) {}
 
   async create(userId: string, roomId: string, createMessageDto: CreateMessageDto) {
@@ -57,7 +60,7 @@ export class MessageService {
   async findAll(roomId: string) {
     const messages = await this.messageRepository.find({
       where: { roomId },
-      relations: ['user'],
+      relations: ['user', 'reactions'],
       order: { createdAt: 'ASC' },
     });
 
@@ -79,5 +82,21 @@ export class MessageService {
     if (!messages) throw new NoMessagesFoundExeption();
 
     return messages;
+  }
+
+  async toggleReaction(
+    userId: string,
+    roomId: string,
+    messageId: string,
+    dto: ToggleMessageReactionDto,
+  ) {
+    const message = await this.messageRepository.findOne({
+      where: { id: messageId, roomId: roomId },
+    });
+    if (!message) throw new MessageDoesNotExist();
+
+    const newReactions = await this.reactionService.toggleReaction({ userId, messageId, ...dto });
+
+    return newReactions;
   }
 }

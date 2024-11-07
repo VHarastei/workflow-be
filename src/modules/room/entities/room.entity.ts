@@ -10,6 +10,9 @@ export class Room extends BaseEntity {
   @Column()
   name: string;
 
+  @Column({ nullable: true, default: null })
+  topic: string;
+
   @Column()
   type: RoomTypeEnum;
 

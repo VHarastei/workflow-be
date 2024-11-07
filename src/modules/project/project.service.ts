@@ -25,6 +25,7 @@ export class ProjectService {
       projectId: newProject.id,
       participants,
       name: 'general',
+      topic: null,
       type: RoomTypeEnum.GROUP,
     });
 
@@ -70,8 +71,8 @@ export class ProjectService {
         {
           userId,
         },
-      ) // Filter by specific userId
-      .leftJoinAndSelect('room.participants', 'participant') // Load all participants in the rooms
+      )
+      .leftJoinAndSelect('room.participants', 'participant')
       .where('project.status = :status', { status: ProjectStatusEnum.ACTIVE })
       .orderBy('project.createdAt', 'ASC')
       .getMany();

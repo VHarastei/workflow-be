@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { MessageModule } from './modules/message/message.module';
 import { ProjectModule } from './modules/project/project.module';
+import { ReactionModule } from './modules/reaction/reaction.module';
 
 config();
 
@@ -30,6 +31,10 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     UsersModule,
     MessageModule,
     ProjectModule,
+    ReactionModule,
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'files'),
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

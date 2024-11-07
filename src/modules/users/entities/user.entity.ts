@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Message } from 'src/modules/message/entities/message.entity';
+import { Reaction } from 'src/modules/reaction/entities/reaction.entity';
 import { Room } from 'src/modules/room/entities/room.entity';
 import { Column, Entity, ManyToMany, OneToMany, Unique } from 'typeorm';
 import { RoleEnum } from '../enums/role.enum';
@@ -21,6 +22,9 @@ export class User extends BaseEntity {
   @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.USER })
   role: RoleEnum;
 
+  @Column({ nullable: true, default: null })
+  profileImage: string;
+
   @Column()
   @Exclude()
   password: string;
@@ -34,6 +38,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
+
+  @OneToMany(() => Reaction, (reaction) => reaction.user)
+  reactions: Reaction[];
 
   constructor(partial: Partial<User>) {
     super();
