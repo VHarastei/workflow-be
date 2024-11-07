@@ -9,6 +9,7 @@ import { CreateMessageDto } from './dto/createMessage.dto';
 import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { Message } from './entities/message.entity';
+import { DigitalOceanService } from '../digitalocean/digitalocean.service';
 
 @Injectable()
 export class MessageService {
@@ -16,9 +17,12 @@ export class MessageService {
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
     private reactionService: ReactionService,
+    private digitalOceanService: DigitalOceanService,
   ) {}
 
-  async create(userId: string, roomId: string, createMessageDto: CreateMessageDto) {
+  async create(userId: string, roomId: string, createMessageDto: CreateMessageDto, files) {
+    console.log('files', files);
+
     const newMessage = this.messageRepository.create({
       roomId,
       userId,
@@ -27,9 +31,19 @@ export class MessageService {
 
     await this.messageRepository.save(newMessage);
 
+    if (files) {
+      files.forEach(async (file) => {
+        const filename = Buffer.from(file.originalname, 'latin1').toString('utf8');
+
+        const fileUrl = await this.digitalOceanService.uploadFile(file.buffer, filename);
+
+        console.log('fileUrl', fileUrl);
+      });
+    }
+
     return this.messageRepository.findOne({
       where: [{ id: newMessage.id }],
-      relations: ['user'],
+      relations: ['user', 'reactions'],
     });
   }
 

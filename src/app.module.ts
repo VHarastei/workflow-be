@@ -10,6 +10,7 @@ import { UsersModule } from './modules/users/users.module';
 import { MessageModule } from './modules/message/message.module';
 import { ProjectModule } from './modules/project/project.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
+import { DigitalOceanModule } from './modules/digitalocean/digitalocean.module';
 
 config();
 
@@ -32,6 +33,7 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     MessageModule,
     ProjectModule,
     ReactionModule,
+    DigitalOceanModule,
     // ServeStaticModule.forRoot({
     //   rootPath: join(__dirname, '..', 'files'),
     // }),

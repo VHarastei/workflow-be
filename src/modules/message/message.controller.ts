@@ -7,26 +7,31 @@ import {
   Patch,
   Post,
   Request,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { CreateMessageDto } from './dto/createMessage.dto';
+import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { MessageService } from './message.service';
-import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('rooms/:roomId/messages')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
-
+  s;
   @Post('/sendMessage')
+  @UseInterceptors(AnyFilesInterceptor())
   sendMessage(
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Request() req,
     @Param('roomId') roomId: string,
     @Body() createMessageDto: CreateMessageDto,
   ) {
-    return this.messageService.create(req.user.id, roomId, createMessageDto);
+    return this.messageService.create(req.user.id, roomId, createMessageDto, files);
   }
 
   @Patch(':messageId')
