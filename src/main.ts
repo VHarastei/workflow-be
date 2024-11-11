@@ -20,8 +20,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.use(morgan('tiny'));
 
-  console.log('dd', join(__dirname, '../..', 'files'));
-
   app.useStaticAssets(join(__dirname, '../..', 'files'), {
     prefix: '/files/',
   });

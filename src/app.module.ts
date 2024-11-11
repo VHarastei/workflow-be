@@ -11,6 +11,7 @@ import { MessageModule } from './modules/message/message.module';
 import { ProjectModule } from './modules/project/project.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
 import { DigitalOceanModule } from './modules/digitalocean/digitalocean.module';
+import { FileModule } from './modules/file/file.module';
 
 config();
 
@@ -34,6 +35,7 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     ProjectModule,
     ReactionModule,
     DigitalOceanModule,
+    FileModule,
     // ServeStaticModule.forRoot({
     //   rootPath: join(__dirname, '..', 'files'),
     // }),

@@ -31,7 +31,7 @@ export class MessageController {
     @Param('roomId') roomId: string,
     @Body() createMessageDto: CreateMessageDto,
   ) {
-    return this.messageService.create(req.user.id, roomId, createMessageDto, files);
+    return this.messageService.create(req.user.id, roomId, createMessageDto, files || []);
   }
 
   @Patch(':messageId')

@@ -10,6 +10,7 @@ import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { Message } from './entities/message.entity';
 import { DigitalOceanService } from '../digitalocean/digitalocean.service';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class MessageService {
@@ -17,12 +18,16 @@ export class MessageService {
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
     private reactionService: ReactionService,
+    private fileService: FileService,
     private digitalOceanService: DigitalOceanService,
   ) {}
 
-  async create(userId: string, roomId: string, createMessageDto: CreateMessageDto, files) {
-    console.log('files', files);
-
+  async create(
+    userId: string,
+    roomId: string,
+    createMessageDto: CreateMessageDto,
+    files: Array<Express.Multer.File>,
+  ) {
     const newMessage = this.messageRepository.create({
       roomId,
       userId,
@@ -32,32 +37,26 @@ export class MessageService {
     await this.messageRepository.save(newMessage);
 
     if (files) {
-      files.forEach(async (file) => {
-        const filename = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      const uploadedFiles = await this.digitalOceanService.uploadFiles(
+        `rooms/${roomId}/${new Date().toISOString()}`,
+        files,
+      );
 
-        const fileUrl = await this.digitalOceanService.uploadFile(file.buffer, filename);
-
-        console.log('fileUrl', fileUrl);
-      });
+      await this.fileService.createMany(newMessage.id, uploadedFiles);
     }
 
-    return this.messageRepository.findOne({
-      where: [{ id: newMessage.id }],
-      relations: ['user', 'reactions'],
-    });
+    return this.findOne(newMessage.id);
   }
 
   async update(userId: string, messageId: string, updateMessageDto: UpdateMessageDto) {
-    const message = await this.messageRepository.findOne({
-      where: { id: messageId },
-    });
+    const message = await this.findOne(messageId);
 
     if (!message) throw new MessageDoesNotExist();
     if (message.userId !== userId) throw new AccessDeniedException();
 
     await this.messageRepository.update(messageId, { ...updateMessageDto, updatedAt: new Date() });
 
-    return this.messageRepository.findOne({ where: [{ id: messageId }], relations: ['user'] });
+    return this.findOne(messageId);
   }
 
   async delete(userId: string, messageId: string) {
@@ -74,17 +73,31 @@ export class MessageService {
   async findAll(roomId: string) {
     const messages = await this.messageRepository.find({
       where: { roomId },
-      relations: ['user', 'reactions'],
+      relations: ['user', 'reactions', 'files'],
       order: { createdAt: 'ASC' },
     });
 
     if (!messages) throw new NoMessagesFoundExeption();
 
-    return messages;
+    const promises = messages.map(async (message) => {
+      const files = await this.getMessageFiles(message);
+
+      return { ...message, files };
+    });
+
+    return Promise.all(promises);
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} message`;
+  async findOne(id: string) {
+    const message = await this.messageRepository.findOne({
+      where: [{ id }],
+      relations: ['user', 'reactions', 'files'],
+    });
+
+    if (!message) throw new MessageDoesNotExist();
+    const files = await this.getMessageFiles(message);
+
+    return { ...message, files };
   }
 
   async findAllByThread(messageId: string) {
@@ -112,5 +125,14 @@ export class MessageService {
     const newReactions = await this.reactionService.toggleReaction({ userId, messageId, ...dto });
 
     return newReactions;
+  }
+
+  async getMessageFiles(message: Message) {
+    const promises = message.files.map(async (file) => {
+      const url = await this.digitalOceanService.getPresignedUrl(file.path);
+      return { ...file, url };
+    });
+
+    return Promise.all(promises);
   }
 }
