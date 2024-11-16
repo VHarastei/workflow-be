@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RoomDoesNotExist } from 'src/common/exceptions/RoomDoesNotExist';
 import { User } from 'src/modules/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
+import { RoomMigrationService } from '../room-migration/room-migration.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { Room } from './entities/room.entity';
@@ -14,14 +15,22 @@ export class RoomService {
     private roomRepository: Repository<Room>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private roomMigrationService: RoomMigrationService,
   ) {}
 
-  async create(userId, { participants, ...roomDetails }: CreateRoomDto) {
+  async create(
+    userId,
+    { participants, ...roomDetails }: CreateRoomDto,
+    importFile?: Express.Multer.File,
+  ) {
     const newRoom = this.roomRepository.create(roomDetails);
+    const room = await this.addParticipants(newRoom, [userId, ...participants]);
 
-    const savedRoom = await this.addParticipants(newRoom, [userId, ...participants]);
+    if (importFile) {
+      await this.roomMigrationService.telegramMigrateRoomHistory(room, importFile);
+    }
 
-    return savedRoom;
+    return this.findOne(room.id);
   }
 
   async update(id, { name, participants }: UpdateRoomDto) {

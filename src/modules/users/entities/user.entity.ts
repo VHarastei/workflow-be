@@ -25,6 +25,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true, default: null })
   profileImage: string;
 
+  @Column({ nullable: true, default: null })
+  telegramId: string;
+
   @Column()
   @Exclude()
   password: string;

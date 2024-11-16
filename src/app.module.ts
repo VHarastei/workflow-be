@@ -12,6 +12,7 @@ import { ProjectModule } from './modules/project/project.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
 import { DigitalOceanModule } from './modules/digitalocean/digitalocean.module';
 import { FileModule } from './modules/file/file.module';
+import { RoomMigrationModule } from './modules/room-migration/room-migration.module';
 
 config();
 
@@ -36,6 +37,7 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     ReactionModule,
     DigitalOceanModule,
     FileModule,
+    RoomMigrationModule,
     // ServeStaticModule.forRoot({
     //   rootPath: join(__dirname, '..', 'files'),
     // }),

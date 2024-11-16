@@ -17,6 +17,10 @@ export class UsersService {
     return this.userRepository.findOne({ where: { id } });
   }
 
+  findByTelegramId(id: string): Promise<User> {
+    return this.userRepository.findOne({ where: { telegramId: id } });
+  }
+
   findByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });
   }

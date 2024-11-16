@@ -8,9 +8,6 @@ export class Project extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
-  prefix: string;
-
   @Column({ default: ProjectStatusEnum.ACTIVE })
   status: ProjectStatusEnum;
 

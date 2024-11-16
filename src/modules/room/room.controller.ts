@@ -8,12 +8,15 @@ import {
   Post,
   Query,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { RoomService } from './room.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('rooms')
@@ -21,8 +24,22 @@ export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Post()
-  createRoom(@Request() req, @Body() createRoomDto: CreateRoomDto) {
-    return this.roomService.create(req.user.id, createRoomDto);
+  @UseInterceptors(
+    FileInterceptor('importFile', {
+      fileFilter: (_, file, callback) => {
+        if (!file.mimetype.match(/\/(zip)$/)) {
+          return callback(new Error('Only zip file format is allowed!'), false);
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  createRoom(
+    @Request() req,
+    @Body() createRoomDto: CreateRoomDto,
+    @UploadedFile() importFile?: Express.Multer.File,
+  ) {
+    return this.roomService.create(req.user.id, createRoomDto, importFile);
   }
 
   @Get()

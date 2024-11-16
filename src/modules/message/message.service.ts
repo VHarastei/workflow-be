@@ -26,7 +26,7 @@ export class MessageService {
     userId: string,
     roomId: string,
     createMessageDto: CreateMessageDto,
-    files: Array<Express.Multer.File>,
+    files?: Array<Express.Multer.File>,
   ) {
     const newMessage = this.messageRepository.create({
       roomId,

@@ -10,6 +10,7 @@ import { FileModule } from '../file/file.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Message]), ReactionModule, DigitalOceanModule, FileModule],
   providers: [MessageService],
+  exports: [MessageService],
   controllers: [MessageController],
 })
 export class MessageModule {}
