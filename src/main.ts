@@ -5,6 +5,7 @@ import * as morgan from 'morgan';
 import { config } from 'dotenv';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 config();
 
@@ -23,6 +24,16 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '../..', 'files'), {
     prefix: '/files/',
   });
+
+  // Swagger setup
+  const config = new DocumentBuilder()
+    .setTitle('Your API Name')
+    .setDescription('API documentation for your application')
+    .setVersion('1.0')
+    .addBearerAuth() // Adds Bearer token authentication
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document); // Swagger UI endpoint
 
   await app.listen(process.env.PORT);
 }
