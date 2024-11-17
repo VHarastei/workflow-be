@@ -5,7 +5,7 @@ import { UpdateReactionDto } from './dto/update-reaction.dto';
 
 @Controller('reaction')
 export class ReactionController {
-  constructor(private readonly reactionService: ReactionService) {}
+  constructor(private readonly reactionService: ReactionService) { }
 
   @Post()
   create(@Body() createReactionDto: CreateReactionDto) {
