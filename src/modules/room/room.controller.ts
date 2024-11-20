@@ -42,6 +42,11 @@ export class RoomController {
     return this.roomService.create(req.user.id, createRoomDto, importFile);
   }
 
+  @Post('findOrCreate')
+  findOrCreateDirectRoom(@Request() req, @Body() createRoomDto: CreateRoomDto) {
+    return this.roomService.findOrCreateDirectRoom(req.user.id, createRoomDto);
+  }
+
   @Get()
   findAll(@Request() req, @Query('projectId') projectId) {
     return this.roomService.findAll(req.user.id, projectId);

@@ -88,6 +88,18 @@ export class MessageService {
     return Promise.all(promises);
   }
 
+  async findAllSimple(roomId: string) {
+    const messages = await this.messageRepository.find({
+      where: { roomId },
+      relations: ['user'],
+      order: { createdAt: 'ASC' },
+    });
+
+    if (!messages) throw new NoMessagesFoundExeption();
+
+    return messages;
+  }
+
   async findOne(id: string) {
     const message = await this.messageRepository.findOne({
       where: [{ id }],

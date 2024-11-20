@@ -7,6 +7,8 @@ import { RoomMigrationService } from '../room-migration/room-migration.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { Room } from './entities/room.entity';
+import { RoomTypeEnum } from './enums/roomType.enum';
+import dataSource from 'dataSource';
 
 @Injectable()
 export class RoomService {
@@ -31,6 +33,37 @@ export class RoomService {
     }
 
     return this.findOne(room.id);
+  }
+
+  async findOrCreateDirectRoom(userId, dto: CreateRoomDto) {
+    const participantIds = [userId, ...dto.participants].sort().join('');
+
+    // TODO: fix this
+    const existingRooms = await this.roomRepository.find({
+      where: {
+        type: RoomTypeEnum.DIRECT,
+      },
+      relations: ['participants'],
+    });
+
+    let existingRoom: Room | null = null;
+
+    existingRooms.forEach((room) => {
+      const existingParticipantIds = room.participants
+        .map(({ id }) => id)
+        .sort()
+        .join('');
+
+      if (participantIds === existingParticipantIds) {
+        existingRoom = room;
+      }
+    });
+
+    console.log('existingRoom', existingRoom);
+
+    if (existingRoom) return existingRoom;
+
+    return this.create(userId, dto);
   }
 
   async update(id, { name, participants }: UpdateRoomDto) {
@@ -75,7 +108,10 @@ export class RoomService {
   }
 
   findOne(id: string) {
-    const room = this.roomRepository.findOneBy({ id });
+    const room = this.roomRepository.findOne({
+      where: { id },
+      relations: ['participants'],
+    });
 
     if (!room) throw new RoomDoesNotExist();
 
