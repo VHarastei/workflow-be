@@ -13,6 +13,7 @@ import { ReactionModule } from './modules/reaction/reaction.module';
 import { DigitalOceanModule } from './modules/digitalocean/digitalocean.module';
 import { FileModule } from './modules/file/file.module';
 import { RoomMigrationModule } from './modules/room-migration/room-migration.module';
+import { AiAssistantModule } from './modules/ai-assistant/ai-assistant.module';
 
 config();
 
@@ -38,6 +39,7 @@ const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT } = process.env;
     DigitalOceanModule,
     FileModule,
     RoomMigrationModule,
+    AiAssistantModule,
     // ServeStaticModule.forRoot({
     //   rootPath: join(__dirname, '..', 'files'),
     // }),
