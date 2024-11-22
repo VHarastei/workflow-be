@@ -11,7 +11,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   findById(id: string): Promise<User> {
     return this.userRepository.findOne({ where: { id } });
@@ -19,6 +19,9 @@ export class UsersService {
 
   findByTelegramId(id: string): Promise<User> {
     return this.userRepository.findOne({ where: { telegramId: id } });
+  }
+  findByFullName(firstName: string, lastName: string): Promise<User> {
+    return this.userRepository.findOne({ where: { firstName, lastName } });
   }
 
   findByEmail(email: string): Promise<User> {

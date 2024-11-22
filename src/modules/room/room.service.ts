@@ -18,7 +18,7 @@ export class RoomService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private roomMigrationService: RoomMigrationService,
-  ) {}
+  ) { }
 
   async create(
     userId,
@@ -29,7 +29,7 @@ export class RoomService {
     const room = await this.addParticipants(newRoom, [userId, ...participants]);
 
     if (importFile) {
-      await this.roomMigrationService.telegramMigrateRoomHistory(room, importFile);
+      await this.roomMigrationService.whatsappMigrateRoomHistory(room, importFile);
     }
 
     return this.findOne(room.id);

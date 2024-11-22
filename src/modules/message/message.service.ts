@@ -20,7 +20,7 @@ export class MessageService {
     private reactionService: ReactionService,
     private fileService: FileService,
     private digitalOceanService: DigitalOceanService,
-  ) {}
+  ) { }
 
   async create(
     userId: string,

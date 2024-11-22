@@ -28,3 +28,12 @@ export interface TelegramMessagesData {
   id: number;
   messages: TelegramMessage[];
 }
+
+export interface WhatsAppMessage {
+  firstName: string; // First name of the sender
+  lastName: string; // Last name of the sender (empty string if not available)
+  date: string; // ISO-formatted date string
+  text: string; // Message text content (empty if the message is only a file)
+  file?: string; // Optional file path for attachments (e.g., images, videos, documents)
+  mime_type?: string; // Optional MIME type for attached files
+}

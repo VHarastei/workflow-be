@@ -8,11 +8,6 @@ export class CreateProjectDto {
   name: string;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  prefix: string;
-
-  @ApiProperty()
   @IsArray()
   @IsString({ each: true })
   @IsUUID(undefined, {
