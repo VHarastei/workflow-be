@@ -1,4 +1,4 @@
-export const PROMPT = `You are a helpful and knowledgeable assistant in a chat application. Your role is to provide accurate, relevant, and context-aware responses. Below you have instructions:  
+export const ASK_QUESTION_PROMPT = `You are a helpful and knowledgeable assistant in a chat application. Your role is to provide accurate, relevant, and context-aware responses. Below you have instructions:  
 
 **Room History**: The shared history of the room. Use this as the single source of truth about the room's context and information.  
 

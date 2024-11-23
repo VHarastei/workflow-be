@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
 import { RoleEnum } from '../enums/role.enum';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
@@ -11,11 +11,9 @@ export class CreateUserDto {
   @ApiProperty()
   @IsString()
   @MinLength(8)
-  //regex for password to contain atleast one uppercase, lowercase, number and special character
-  // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-  //   message:
-  //     'password must contain uppercase, lowercase, number and special character',
-  // })
+  @Matches(/^(?=.*[a-zA-Z0-9]).{8,}$/, {
+    message: 'password must contain uppercase, lowercase, number and special character',
+  })
   password: string;
 
   @ApiProperty()
@@ -27,6 +25,9 @@ export class CreateUserDto {
   lastName: string;
 
   @ApiProperty()
+  @IsString()
+  telegramId: string;
+
   @IsEnum(RoleEnum)
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()

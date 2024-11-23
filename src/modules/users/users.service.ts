@@ -5,12 +5,17 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
 import { UserDoesNotExistException } from 'src/common/exceptions/UserDoesNotExistException';
+import { SendInviationDto } from './dto/sendInvitation.dto';
+import { JwtService } from '@nestjs/jwt';
+import { NodemailerService } from '../nodemailer/nodemailer.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+    private readonly nodemailer: NodemailerService,
   ) { }
 
   findById(id: string): Promise<User> {
@@ -48,6 +53,16 @@ export class UsersService {
     });
 
     return await user.save();
+  }
+
+  async sendInvitation(dto: SendInviationDto) {
+    const promises = dto.emails.map(async (email) => {
+      const token = await this.jwtService.sign({ email, role: dto.role });
+
+      return this.nodemailer.sendInvitationEmail(email, token);
+    });
+
+    return Promise.all(promises);
   }
 
   async updateProfile(
