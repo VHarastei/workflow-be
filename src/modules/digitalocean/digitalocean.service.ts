@@ -53,4 +53,14 @@ export class DigitalOceanService {
 
     return this.s3.getSignedUrlPromise('getObject', requestParams);
   }
+
+  async getObject(fileKey: string, params?: any) {
+    const requestParams = {
+      Bucket: process.env.DIGITALOCEAN_BUCKET,
+      Key: fileKey,
+      ...params,
+    };
+
+    return this.s3.getObject(requestParams).promise();
+  }
 }

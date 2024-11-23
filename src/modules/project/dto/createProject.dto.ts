@@ -5,10 +5,6 @@ export class CreateProjectDto {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  prefix: string;
-
   @IsArray()
   @IsString({ each: true })
   @IsUUID(undefined, {

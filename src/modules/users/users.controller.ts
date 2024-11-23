@@ -17,6 +17,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { randomUUID } from 'crypto';
+import { SendInviationDto } from './dto/sendInvitation.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('users')
@@ -65,13 +66,8 @@ export class UsersController {
     return this.userService.updateProfile(userId, updateProfileDto, profileImagePath);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.userService.findOne(id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(id, updateUserDto);
-  // }
+  @Post('/sendInvitation')
+  async sendInvitation(@Body() sendInviationDto: SendInviationDto) {
+    return this.userService.sendInvitation(sendInviationDto);
+  }
 }

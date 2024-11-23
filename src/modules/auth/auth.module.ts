@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { UsersService } from 'src/modules/users/users.service';
 import { User } from 'src/modules/users/entities/user.entity';
+import { UsersService } from 'src/modules/users/users.service';
+import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { NodemailerModule } from '../nodemailer/nodemailer.module';
 
 config();
 @Module({
@@ -20,6 +21,7 @@ config();
         expiresIn: '7d',
       },
     }),
+    NodemailerModule,
   ],
   controllers: [AuthController],
   providers: [UsersService, AuthService, JwtStrategy],
