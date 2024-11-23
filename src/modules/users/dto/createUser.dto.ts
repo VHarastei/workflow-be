@@ -28,6 +28,7 @@ export class CreateUserDto {
   @IsString()
   telegramId: string;
 
+  @ApiProperty()
   @IsEnum(RoleEnum)
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
