@@ -16,7 +16,7 @@ export class UsersService {
     private userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly nodemailer: NodemailerService,
-  ) {}
+  ) { }
 
   findById(id: string): Promise<User> {
     return this.userRepository.findOne({ where: { id } });
@@ -24,6 +24,9 @@ export class UsersService {
 
   findByTelegramId(id: string): Promise<User> {
     return this.userRepository.findOne({ where: { telegramId: id } });
+  }
+  findByFullName(firstName: string, lastName: string): Promise<User> {
+    return this.userRepository.findOne({ where: { firstName, lastName } });
   }
 
   findByEmail(email: string): Promise<User> {

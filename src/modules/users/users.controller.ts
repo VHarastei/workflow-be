@@ -18,22 +18,46 @@ import { extname } from 'path';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { randomUUID } from 'crypto';
 import { SendInviationDto } from './dto/sendInvitation.dto';
+import { ApiBearerAuth, ApiConsumes, ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
+@ApiTags('Users')
+@ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(private readonly userService: UsersService) { }
 
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'User successfully created' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
+  @ApiOperation({ summary: 'Retrieve all users' })
+  @ApiResponse({ status: 200, description: 'List of all users' })
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
+  @ApiOperation({ summary: 'Update user profile' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Profile update data',
+    schema: {
+      type: 'object',
+      properties: {
+        profileImage: { type: 'string', format: 'binary' },
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        email: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Profile successfully updated' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Patch('profile')
   @UseInterceptors(
     FileInterceptor('profileImage', {
@@ -66,6 +90,9 @@ export class UsersController {
     return this.userService.updateProfile(userId, updateProfileDto, profileImagePath);
   }
 
+  @ApiOperation({ summary: 'Send an invitation' })
+  @ApiResponse({ status: 200, description: 'Invitation successfully sent' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post('/sendInvitation')
   async sendInvitation(@Body() sendInviationDto: SendInviationDto) {
     return this.userService.sendInvitation(sendInviationDto);
