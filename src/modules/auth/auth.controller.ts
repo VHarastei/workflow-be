@@ -7,14 +7,19 @@ import { LoginResponseDto } from './dto/loginResponse.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RegisterResponseDto } from './dto/registerResponse.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { User } from '../users/entities/user.entity';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiResponse({ status: 201, description: 'User registered successfully.', type: RegisterResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'User registered successfully.',
+    type: RegisterResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid registration data.' })
   @Post('register')
   async register(@Body() registerDto: RegisterDto): Promise<RegisterResponseDto> {
@@ -31,7 +36,11 @@ export class AuthController {
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'User profile retrieved successfully.', type: UserProfileDto })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved successfully.',
+    type: User,
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @UseGuards(AuthGuard('jwt'))
   @Get('me')

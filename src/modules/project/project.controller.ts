@@ -13,17 +13,25 @@ import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/createProject.dto';
 import { UpdateProjectDto } from './dto/updateProject.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+  ApiOkResponse,
+} from '@nestjs/swagger';
+import { Project } from './entities/project.entity';
 
 @ApiTags('Projects')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller('projects')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) { }
+  constructor(private readonly projectService: ProjectService) {}
 
   @ApiOperation({ summary: 'Create a new project' })
-  @ApiResponse({ status: 201, description: 'The project has been successfully created.' })
+  @ApiOkResponse({ description: 'The project has been successfully created.', type: Project })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @Post()
   create(@Request() req, @Body() createProjectDto: CreateProjectDto) {
@@ -31,7 +39,7 @@ export class ProjectController {
   }
 
   @ApiOperation({ summary: 'Retrieve all projects for the authenticated user' })
-  @ApiResponse({ status: 200, description: 'List of projects successfully retrieved.' })
+  @ApiOkResponse({ description: 'List of projects successfully retrieved.', type: [Project] })
   @Get()
   findAll(@Request() req) {
     return this.projectService.findAll(req.user.id);
@@ -39,7 +47,7 @@ export class ProjectController {
 
   @ApiOperation({ summary: 'Retrieve a specific project by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the project to retrieve' })
-  @ApiResponse({ status: 200, description: 'Project details retrieved successfully.' })
+  @ApiOkResponse({ description: 'Project details retrieved successfully.', type: Project })
   @ApiResponse({ status: 404, description: 'Project not found.' })
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -48,7 +56,7 @@ export class ProjectController {
 
   @ApiOperation({ summary: 'Update a project by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the project to update' })
-  @ApiResponse({ status: 200, description: 'The project has been successfully updated.' })
+  @ApiOkResponse({ description: 'The project has been successfully updated.', type: Project })
   @ApiResponse({ status: 404, description: 'Project not found.' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {

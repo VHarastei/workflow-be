@@ -18,17 +18,26 @@ import { extname } from 'path';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { randomUUID } from 'crypto';
 import { SendInviationDto } from './dto/sendInvitation.dto';
-import { ApiBearerAuth, ApiConsumes, ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiOkResponse,
+} from '@nestjs/swagger';
+import { User } from './entities/user.entity';
 
 @ApiTags('Users')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) { }
+  constructor(private readonly userService: UsersService) {}
 
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiResponse({ status: 201, description: 'User successfully created' })
+  @ApiOkResponse({ description: 'User successfully created', type: User })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -36,7 +45,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'Retrieve all users' })
-  @ApiResponse({ status: 200, description: 'List of all users' })
+  @ApiOkResponse({ description: 'List of all users', type: [User] })
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -56,7 +65,7 @@ export class UsersController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'Profile successfully updated' })
+  @ApiOkResponse({ description: 'Profile successfully updated', type: User })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Patch('profile')
   @UseInterceptors(

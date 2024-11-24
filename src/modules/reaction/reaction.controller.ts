@@ -2,15 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ReactionService } from './reaction.service';
 import { CreateReactionDto } from './dto/create-reaction.dto';
 import { UpdateReactionDto } from './dto/update-reaction.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiOkResponse } from '@nestjs/swagger';
+import { Reaction } from './entities/reaction.entity';
 
 @ApiTags('Reactions')
 @Controller('reaction')
 export class ReactionController {
-  constructor(private readonly reactionService: ReactionService) { }
+  constructor(private readonly reactionService: ReactionService) {}
 
   @ApiOperation({ summary: 'Create a new reaction' })
-  @ApiResponse({ status: 201, description: 'Reaction successfully created.' })
+  @ApiOkResponse({ description: 'Reaction successfully created.', type: Reaction })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @Post()
   create(@Body() createReactionDto: CreateReactionDto) {
@@ -18,7 +19,7 @@ export class ReactionController {
   }
 
   @ApiOperation({ summary: 'Retrieve all reactions' })
-  @ApiResponse({ status: 200, description: 'List of all reactions.' })
+  @ApiOkResponse({ description: 'List of all reactions.', type: [Reaction] })
   @Get()
   findAll() {
     return this.reactionService.findAll();
@@ -26,7 +27,7 @@ export class ReactionController {
 
   @ApiOperation({ summary: 'Retrieve a reaction by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the reaction to retrieve.' })
-  @ApiResponse({ status: 200, description: 'Reaction details retrieved successfully.' })
+  @ApiOkResponse({ description: 'Reaction details retrieved successfully.', type: Reaction })
   @ApiResponse({ status: 404, description: 'Reaction not found.' })
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -35,7 +36,7 @@ export class ReactionController {
 
   @ApiOperation({ summary: 'Update a reaction by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the reaction to update.' })
-  @ApiResponse({ status: 200, description: 'Reaction successfully updated.' })
+  @ApiOkResponse({ description: 'Reaction successfully updated.', type: Reaction })
   @ApiResponse({ status: 404, description: 'Reaction not found.' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReactionDto: UpdateReactionDto) {

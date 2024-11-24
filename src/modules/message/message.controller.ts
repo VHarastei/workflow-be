@@ -24,7 +24,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@ne
 @UseGuards(AuthGuard('jwt'))
 @Controller('rooms/:roomId/messages')
 export class MessageController {
-  constructor(private readonly messageService: MessageService) { }
+  constructor(private readonly messageService: MessageService) {}
 
   @ApiOperation({ summary: 'Send a new message in a room' })
   @ApiResponse({ status: 201, description: 'Message sent successfully.' })
@@ -73,7 +73,10 @@ export class MessageController {
 
   @ApiOperation({ summary: 'Find all messages in a thread' })
   @ApiResponse({ status: 200, description: 'List of thread messages retrieved successfully.' })
-  @ApiParam({ name: 'messageId', description: 'ID of the parent message to retrieve thread messages' })
+  @ApiParam({
+    name: 'messageId',
+    description: 'ID of the parent message to retrieve thread messages',
+  })
   @Get(':messageId')
   findAllByThread(@Param('messageId') messageId: string) {
     return this.messageService.findAllByThread(messageId);

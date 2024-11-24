@@ -7,7 +7,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @ApiTags('LLM')
 @Controller('llm')
 export class LLMController {
-  constructor(private readonly LLMService: LLMService) { }
+  constructor(private readonly LLMService: LLMService) {}
 
   @ApiOperation({ summary: 'Ask a question about a room' })
   @ApiResponse({ status: 200, description: 'Question processed successfully.' })

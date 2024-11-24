@@ -17,14 +17,23 @@ import { CreateRoomDto } from './dto/createRoom.dto';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { RoomService } from './room.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Room } from './entities/room.entity';
 
 @ApiTags('Rooms')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller('rooms')
 export class RoomController {
-  constructor(private readonly roomService: RoomService) { }
+  constructor(private readonly roomService: RoomService) {}
 
   @ApiOperation({ summary: 'Create a new room' })
   @ApiConsumes('multipart/form-data')
@@ -39,7 +48,7 @@ export class RoomController {
       },
     },
   })
-  @ApiResponse({ status: 201, description: 'Room successfully created' })
+  @ApiOkResponse({ description: 'Room successfully created', type: Room })
   @ApiResponse({ status: 400, description: 'Invalid data or file format' })
   @Post()
   @UseInterceptors(
@@ -61,21 +70,21 @@ export class RoomController {
   }
 
   @ApiOperation({ summary: 'Find or create a direct room' })
-  @ApiResponse({ status: 200, description: 'Room found or created successfully' })
+  @ApiOkResponse({ description: 'Room found or created successfully', type: Room })
   @Post('findOrCreate')
   findOrCreateDirectRoom(@Request() req, @Body() createRoomDto: CreateRoomDto) {
     return this.roomService.findOrCreateDirectRoom(req.user.id, createRoomDto);
   }
 
   @ApiOperation({ summary: 'Get all rooms' })
-  @ApiResponse({ status: 200, description: 'List of all rooms' })
+  @ApiOkResponse({ description: 'List of all rooms', type: [Room] })
   @Get()
   findAll(@Request() req, @Query('projectId') projectId) {
     return this.roomService.findAll(req.user.id, projectId);
   }
 
   @ApiOperation({ summary: 'Get room by ID' })
-  @ApiResponse({ status: 200, description: 'Room details retrieved successfully' })
+  @ApiOkResponse({ description: 'Room details retrieved successfully', type: Room })
   @ApiResponse({ status: 404, description: 'Room not found' })
   @Get(':roomId')
   findOne(@Param('roomId') roomId: string) {
@@ -83,7 +92,7 @@ export class RoomController {
   }
 
   @ApiOperation({ summary: 'Update room details' })
-  @ApiResponse({ status: 200, description: 'Room updated successfully' })
+  @ApiOkResponse({ description: 'Room updated successfully', type: Room })
   @ApiResponse({ status: 404, description: 'Room not found' })
   @Patch(':roomId')
   update(@Param('roomId') roomId: string, @Body() updateRoomDto: UpdateRoomDto) {
