@@ -23,14 +23,11 @@ export class Message extends BaseEntity {
   @ApiProperty()
   @Column({ nullable: true, default: null })
   parentMessageId: string;
-  @ApiProperty()
   @ManyToOne(() => User, (user) => user.messages)
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
   user: User;
-  @ApiProperty()
   @OneToMany(() => Reaction, (reaction) => reaction.message)
   reactions: Reaction[];
-  @ApiProperty()
   @OneToMany(() => File, (file) => file.message)
   files: File[];
 }
