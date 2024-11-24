@@ -73,8 +73,6 @@ export class RoomMigrationService {
         const messageText = message.text_entities.map((entity) => entity.text).join('');
         const messageTextTemplate = { ops: [{ insert: messageText ? messageText : '' }] };
 
-        console.log(messageTextTemplate);
-
         const createMessageDto = {
           text: JSON.stringify(messageTextTemplate),
           parentMessageId: null,
@@ -131,8 +129,6 @@ export class RoomMigrationService {
           const file = extractedFiles.find((f) => f.path === `${filePath}`);
           if (!file) return;
 
-          console.log('message file', message.file);
-
           return dumpUnzipperFileToMulterFile(
             file,
             message.file,
@@ -175,21 +171,17 @@ export class RoomMigrationService {
   transformMessagesToObjects(messages: string[]) {
     return messages
       .map((message) => {
-        // Regular expression to parse the message
         const messageRegex = /^(\d{2}\/\d{2}\/\d{4}), (\d{2}:\d{2}) - ([^:]+):? (.+)?$/;
         const match = message.match(messageRegex);
 
         if (!match) {
-          // Skip system messages or messages without sender
           return null;
         }
 
         const [_, date, time, sender, content] = match;
 
-        // Parse date and time into ISO format
         const isoDate = new Date(`${date.split("/").reverse().join("-")}T${time}:00`).toISOString();
 
-        // Split sender into firstName and lastName
         const [firstName, ...lastNameParts] = sender.split(" ");
         const lastName = lastNameParts.join(" ") || '';
 
@@ -199,10 +191,9 @@ export class RoomMigrationService {
 
         const file = fileMatch ? fileMatch[1] + '.' + fileMatch[2] : null;
         const fileMimeType = fileMatch
-          ? this.getMimeType(fileMatch[2]) // Infer MIME type based on file extension
+          ? this.getMimeType(fileMatch[2])
           : null;
 
-        // Return structured message object
         return {
           firstName: firstName || "",
           lastName: lastName || "",
@@ -212,7 +203,7 @@ export class RoomMigrationService {
           mime_type: fileMimeType,
         };
       })
-      .filter((msg) => msg !== null && msg.firstName !== "Messages"); // Remove nulls and system messages
+      .filter((msg) => msg !== null && msg.firstName !== "Messages");
   }
 
 }
