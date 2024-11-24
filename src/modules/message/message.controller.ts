@@ -17,7 +17,15 @@ import { CreateMessageDto } from './dto/createMessage.dto';
 import { ToggleMessageReactionDto } from './dto/toggleMessageReaction.dto';
 import { UpdateMessageDto } from './dto/updateMessage.dto';
 import { MessageService } from './message.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+  ApiOkResponse,
+} from '@nestjs/swagger';
+import { Message } from './entities/message.entity';
 
 @ApiTags('Messages')
 @ApiBearerAuth()
@@ -27,7 +35,7 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @ApiOperation({ summary: 'Send a new message in a room' })
-  @ApiResponse({ status: 201, description: 'Message sent successfully.' })
+  @ApiOkResponse({ description: 'Message sent successfully.', type: Message })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @ApiParam({ name: 'roomId', description: 'ID of the room to send the message to' })
   @Post('/sendMessage')
@@ -42,7 +50,7 @@ export class MessageController {
   }
 
   @ApiOperation({ summary: 'Update a specific message' })
-  @ApiResponse({ status: 200, description: 'Message updated successfully.' })
+  @ApiOkResponse({ description: 'Message updated successfully.', type: Message })
   @ApiResponse({ status: 404, description: 'Message not found.' })
   @ApiParam({ name: 'messageId', description: 'ID of the message to update' })
   @Patch(':messageId')
@@ -64,7 +72,7 @@ export class MessageController {
   }
 
   @ApiOperation({ summary: 'Find all messages in a room' })
-  @ApiResponse({ status: 200, description: 'List of messages retrieved successfully.' })
+  @ApiOkResponse({ description: 'List of messages retrieved successfully.', type: Message })
   @ApiParam({ name: 'roomId', description: 'ID of the room to retrieve messages from' })
   @Get('')
   findAllByRoom(@Param('roomId') roomId: string) {
@@ -72,7 +80,7 @@ export class MessageController {
   }
 
   @ApiOperation({ summary: 'Find all messages in a thread' })
-  @ApiResponse({ status: 200, description: 'List of thread messages retrieved successfully.' })
+  @ApiOkResponse({ description: 'List of thread messages retrieved successfully.', type: Message })
   @ApiParam({
     name: 'messageId',
     description: 'ID of the parent message to retrieve thread messages',
