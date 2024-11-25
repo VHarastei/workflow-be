@@ -26,6 +26,7 @@ export class ProjectService {
       participants,
       name: 'general',
       topic: null,
+      importSource: null,
       type: RoomTypeEnum.GROUP,
     });
 

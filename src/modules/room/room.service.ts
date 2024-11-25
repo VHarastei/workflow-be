@@ -8,7 +8,7 @@ import { CreateRoomDto } from './dto/createRoom.dto';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { Room } from './entities/room.entity';
 import { RoomTypeEnum } from './enums/roomType.enum';
-import dataSource from 'dataSource';
+import { RoomImportSourceEnum } from './enums/roomImportSource.enum';
 
 @Injectable()
 export class RoomService {
@@ -18,7 +18,7 @@ export class RoomService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private roomMigrationService: RoomMigrationService,
-  ) { }
+  ) {}
 
   async create(
     userId,
@@ -28,8 +28,12 @@ export class RoomService {
     const newRoom = this.roomRepository.create(roomDetails);
     const room = await this.addParticipants(newRoom, [userId, ...participants]);
 
-    if (importFile) {
-      await this.roomMigrationService.whatsappMigrateRoomHistory(room, importFile);
+    if (importFile && roomDetails.importSource) {
+      if (roomDetails.importSource === RoomImportSourceEnum.TELEGRAM) {
+        await this.roomMigrationService.telegramMigrateRoomHistory(room, importFile);
+      } else {
+        await this.roomMigrationService.whatsappMigrateRoomHistory(room, importFile);
+      }
     }
 
     return this.findOne(room.id);

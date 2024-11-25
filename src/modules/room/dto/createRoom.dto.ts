@@ -2,6 +2,7 @@ import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class
 import { RoomTypeEnum } from '../enums/roomType.enum';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { RoomImportSourceEnum } from '../enums/roomImportSource.enum';
 
 export class CreateRoomDto {
   @ApiProperty()
@@ -23,6 +24,12 @@ export class CreateRoomDto {
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   type: RoomTypeEnum;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsEnum(RoomImportSourceEnum)
+  @Transform(({ value }) => value.toString())
+  importSource: RoomImportSourceEnum;
 
   @ApiProperty()
   @IsArray()
